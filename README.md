@@ -10,4 +10,4 @@
 Matlab preprocessing scripts along with fieldtrip analysis scripts will be added shortly.
 
 ## Data 
-Preprocessed data matrices for each participant (with anonymised IDs) can be found under `data/`. Rows correspond to trials, and columns to frequency (in 1 Hz bins) per electrode location. Access to the raw data will be added shortly.
+Preprocessed data matrices for each participant (with anonymised IDs) can be found under `data/`. Rows correspond to trials, and columns to power per frequency (in 1 Hz bins) per electrode location. Access to the raw data will be added shortly.
