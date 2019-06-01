@@ -36,7 +36,7 @@ def model_reliance(model, X, y, perm_groups=None, keep_idc=False, p=1, normalise
     mr = {}  # data structure for saving model reliances
     for i in range(0, p):
         for group, cols in perm_groups.items():
-            X_perm = X.copy()  # needed?
+            X_perm = X.copy()
 
             if isinstance(cols, list):
                 cols = list(map(str, cols))
