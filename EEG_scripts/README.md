@@ -1,12 +1,12 @@
 # EEG Preprocessing and analysis 
 ## General information 
-EEG preprocessing, cluster based permutation statistics and plotting of Figure 2B, 3 and S5 uses the Matlab based *Fieldtrip Toolbox* (Oostenveld, Fries, Maris, & Schoffelen, 2011). Please note that we are still in the process of converting the raw data to a non-proprietary format. The preprocessing routines will then be adjusted accordingly. 
+EEG preprocessing, cluster based permutation statistics and plotting of Figure 2B, 3 and S5 uses the Matlab based *Fieldtrip Toolbox* (Oostenveld, Fries, Maris, & Schoffelen, 2011). *Note that we are still in the process of converting the raw data to a non-proprietary format. The preprocessing routines will then be adjusted accordingly.* 
 
 Plotting of powerspectra uses the *boundedline function* (Kearney, 2018), which can be downloaded from https://de.mathworks.com/matlabcentral/fileexchange/27485-boundedline-m.
 
 ## File structure 
 - `EEG_prepro.m`
-    - Reads in raw data from all three sessions for all subjects
+    - Reads in raw data from all three sessions for all subjects. *Note: The recording of the first session for subject S01 is currently split into two files, due to technical reasons. These can simply be concatenated during preprocessing. This will be changed shortly.*
     - Computes independent component analysis and removes cardiac and blink artifacts
     - Computes frequency analysis
 - `generate_matrices.m` creates matrices containing preprocessed data that is used to train models and estimate model values
