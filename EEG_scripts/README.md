@@ -1,6 +1,6 @@
 # EEG Preprocessing and analysis 
 ## General information 
-EEG preprocessing, cluster based permutation statistics and plotting of Figure 2B, 3 and S5 uses the Matlab based *Fieldtrip Toolbox* (Oostenveld, Fries, Maris, & Schoffelen, 2011). 
+EEG preprocessing, cluster based permutation statistics and plotting of Figure 2B, 3 and S5 uses the Matlab based *Fieldtrip Toolbox* (Oostenveld, Fries, Maris, & Schoffelen, 2011). Please note that we are still in the process of converting the raw data to a non-proprietary format. The preprocessing routines will then be adjusted accordingly. 
 
 Plotting of powerspectra uses the *boundedline function* (Kearney, 2018), which can be downloaded from https://de.mathworks.com/matlabcentral/fileexchange/27485-boundedline-m.
 
