@@ -10,13 +10,13 @@ rseed = 42
 inputdirectory = os.path.abspath("data/") + '/'
 
 # List of subjects, in non-ascending order of classification performance
-subjects = ['fkzt',
-            'bg56',
-            'Xmzp',
-            'wlPU',
-            'jzVE',
-            '3nJi',
-            '4cfh',
-            'djAW',
-            'mePD',
-            'kWxI']
+subjects = ['S01',
+            'S02',
+            'S03',
+            'S04',
+            'S05',
+            'S06',
+            'S07',
+            'S08',
+            'S09',
+            'S10']
