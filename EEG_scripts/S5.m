@@ -1,8 +1,145 @@
 clear
 close all
 clc
+%% supplementary cluster-based permutation analysis across subjects
+% load data
+clear 
+subjects = {'S01' 'S02' 'S03' 'S04' 'S05' 'S06' 'S07' 'S08' 'S09' 'S10'};
 
-% load fft data and concatinate over sessions 
+for ss=1:length(subjects)
+    path       = strcat ('/data/WM_2018_Data/',subjects{ss}); 
+    cd (path)
+   
+    load fftall
+    one{ss}   = ft_freqdescriptives([],fftone_han);
+    four{ss}  = ft_freqdescriptives([],fftfour_han);
+    seven{ss} = ft_freqdescriptives([],fftseven_han);   
+end
+% compute grand average
+cfg            = [];
+load1          = ft_freqgrandaverage(cfg,one{:});
+load4          = ft_freqgrandaverage(cfg,four{:});
+load7          = ft_freqgrandaverage(cfg,seven{:});
+load1.cfg      = [];
+load4.cfg      = [];
+load7.cfg      = [];
+
+% plot multiploter 
+cfg            = [];
+cfg.xlim       = [2 40];
+cfg.layout     = '/data/WM_2018_Data/ant128.lay';
+figure; ft_multiplotER(cfg, load1,load4,load7);
+
+% compute neighbours for statistics
+load ('/data/WM_2018_Data/headmodel_ant/elec_aligned.mat');
+cfg                 = [];
+cfg.method          = 'distance';
+cfg.neighbourdist   = 30;
+cfg.elec            = elec_aligned;
+cfg.feedback        = 'yes';
+neighbours          = ft_prepare_neighbours(cfg);
+[a,b]               = match_str(elec_aligned.label,one{1}.label);
+labels              = one{1}.label(b,:);
+
+% ensure all data have the same labels
+for i=1:length(subjects)
+    cfg         = [];
+    cfg.channel = labels;
+    one{i}      =ft_selectdata(cfg,one{i});
+    four{i}     = ft_selectdata(cfg,four{i});
+    seven{i}    = ft_selectdata(cfg,seven{i});
+end
+
+% test WM load one vs. WM load seven
+cfg                  = [];
+cfg.frequency        = [2 20];
+cfg.method           = 'montecarlo';
+
+cfg.statistic        = 'ft_statfun_depsamplesT';
+cfg.correctm         = 'cluster';
+cfg.clusteralpha     = 0.05;
+cfg.clusterstatistic = 'maxsum';
+cfg.tail             = 0;
+cfg.clustertail      = 0;
+cfg.alpha            = 0.025;
+cfg.numrandomization = 1000;
+cfg.neighbours       = neighbours;
+
+subj    = 10;
+
+clear design
+
+design  = zeros(1,2*subj);
+for i   = 1:subj
+  design(1,i) = i;
+end
+for i   = 1:subj
+  design(1,subj+i) = i;
+end
+design(2,1:subj)        = 1;
+design(2,subj+1:2*subj) = 2;
+
+cfg.design          = design;
+cfg.ivar            = 2;
+cfg.uvar            = 1;
+[stat]              = ft_freqstatistics(cfg, one{:},seven{:});
+stat.cfg            = [];
+
+% plot statistics output
+cfg                 = [];
+cfg.parameter       = 'stat';
+cfg.maskparameter   = 'mask';
+cfg.zlim            = [-3 3];
+cfg.layout          = '/data/WM_2018_Data/ant128.lay';
+figure;
+ft_multiplotER(cfg,stat);
+
+% compute main effect 
+cfg                  = [];
+cfg.frequency        = [2 20];
+cfg.method           = 'montecarlo';
+cfg.statistic        = 'ft_statfun_depsamplesFunivariate';
+cfg.correctm         = 'cluster';
+cfg.clusteralpha     = 0.05;
+cfg.clusterstatistic = 'maxsum';
+cfg.tail             = 1;
+cfg.clustertail      = 1;
+cfg.alpha            = 0.05;
+cfg.numrandomization = 1000;
+cfg.neighbours       = neighbours;
+
+subj = 10;
+clear design
+design = zeros(1,2*subj);
+for i = 1:subj
+  design(1,i) = i;
+end
+for i = 1:subj
+  design(1,subj+i) = i;
+end
+for i = 1:subj
+  design(1,2*subj+i) = i;
+end
+design(2,1:subj)        = 1;
+design(2,subj+1:2*subj) = 2;
+design(2,2*subj+1:3*subj) = 3;
+cfg.design = design;
+cfg.uvar = 1;
+cfg.ivar = 2;
+[stat] = ft_freqstatistics(cfg, one{:},four{:},seven{:});
+stat.cfg = [];
+
+% plot statistics output
+cfg = [];
+cfg.parameter = 'stat';
+cfg.maskparameter = 'mask';
+cfg.layout = '/data/WM_2018_Data/ant128.lay';
+figure;
+ft_multiplotER(cfg,stat);
+
+%% Plotting Figure S5A
+clear
+%load fft data and concatinate over sessions 
 subjects = {'S01' 'S02' 'S03' 'S04' 'S05' 'S06' 'S07' 'S08' 'S09' 'S10'};
 for ss=1:length(subjects)
     path =strcat ('/wmdecoding/data/',subjects{ss}); 
@@ -48,7 +185,6 @@ load1_all = ft_freqgrandaverage(cfg,one1{:},one2{:},one3{:});
 load4_all = ft_freqgrandaverage(cfg,four1{:},four2{:},four3{:});
 load7_all = ft_freqgrandaverage(cfg,seven1{:},seven2{:},seven3{:});
 
-%% Plotting Figure S5A
 % Select data for each WM load from occipital electrodes 
 cfg = [];
 cfg.channel = {'Z14','Z13','Z12','Z11','Z10','L12','L11','L10','R12','R11','R10' }
@@ -88,6 +224,7 @@ xticks([0:5:40])
 yticks([1:6])
 
 %% Plotting Figure S5B
+
 % plot topographies for frequency bands and load condition 
 freq_groups = [21 40;
     13 20;
