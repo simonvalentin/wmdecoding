@@ -25,9 +25,12 @@ tmpfft = ft_freqdescriptives([],tmpfft);
 tmpfft.powspctrm=nan(128,1)
 
 % load and substitute 'tmpfft' with  MR values 
-load('/wmdecoding/data/mr_roi_alpha.mat')
+load('/wmdecoding/data/mr_roi.mat')
+
 groups = {leftocci_roi,rightocci_roi,leftcentral_roi,rightcentral_roi,leftfrontal_roi...
           rightfrontal_roi,frontocentral_roi,central_roi,occicentral_roi};
+
+mr = mr*100
 
 for subj = 1:10 % subjects
     
@@ -40,26 +43,26 @@ for subj = 1:10 % subjects
     tmp{subj} = tmpfft;
 end
 
-% Plotting of Figure 2B
+% Plotting of Figure 3B
 pos = [1 2 3 4 5 7 8 9 10 11] % defines position within multiplot
 number = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '10'} % subject indices
 
 figure;
-
-for i = 1:10
-	cfg = [];
-	cfg.layout = '/wmdecoding/data/ant128.lay';
-	cfg.style  = 'fill';
-	cfg.comment = 'no';
-	cfg.marker  = 'off';
-	cfg.zlim    = [-0.05 0.05];
-	subplot(2,6,pos(i)); ft_topoplotER(cfg,tmp{i});
-	title(strcat('Subj. #', number(i)), 'Units', 'normalized', 'Position', [0.5, 1.1, 0], 'FontSize', 13, 'fontweight', 'normal');
-end
-
+set(gca, 'FontName', 'Arial')
 set(gcf,'renderer','Painters', 'Position',  [100, 100, 1300, 500])
-t = colorbar('Position', [0.8 0.35 0.015 0.33], 'FontSize', 13)
-ylabel(t, 'MR [%]')
-
 ft_hastoolbox('brewermap', 1);         % ensure this toolbox is on the path
+
 colormap(flipud(brewermap(64,'RdBu'))) % change the colormap
+for i=1:10
+cfg = [];
+cfg.layout = '/wmdecoding/data/ant128.lay';
+cfg.style  = 'fill';
+cfg.comment = 'no';
+cfg.marker  = 'off';
+cfg.zlim    = [-0.015 0.015];
+cfg.gridscale = 300;
+subplot(2,6,pos(i)); ft_topoplotER(cfg,tmp{i});
+title(strcat('Subj. #', number(i)), 'Units', 'normalized', 'Position', [0.5, 1.1, 0], 'FontSize', 18, 'fontweight', 'normal');
+end
+t = colorbar('Position', [0.8 0.35 0.015 0.33], 'FontSize', 16)
+ylabel(t, 'MR [%]')
